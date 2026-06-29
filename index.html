@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSA Problem Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- LOGIN/SIGNUP SCREEN -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-container">
+      <div class="auth-brand">
+        <span class="brand-icon">&gt;_</span>
+        <h1 class="auth-title">DSA Tracker</h1>
+        <p class="auth-subtitle">Track your algorithmic journey</p>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" class="auth-form active">
+        <h2 class="auth-form-title">Login</h2>
+        
+        <div class="auth-field">
+          <label>Username</label>
+          <input type="text" id="loginUsername" class="auth-input" placeholder="Enter username" required />
+        </div>
+
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="loginPassword" class="auth-input" placeholder="Enter password" required />
+        </div>
+
+        <div id="loginError" class="auth-error"></div>
+
+        <button type="button" class="auth-btn" id="loginBtn">Login</button>
+
+        <p class="auth-toggle">
+          Don't have an account? 
+          <button type="button" class="auth-link" id="switchToSignup">Sign up</button>
+        </p>
+      </form>
+
+      <!-- SIGNUP FORM -->
+      <form id="signupForm" class="auth-form">
+        <h2 class="auth-form-title">Create Account</h2>
+        
+        <div class="auth-field">
+          <label>Username</label>
+          <input type="text" id="signupUsername" class="auth-input" placeholder="Choose username" required />
+        </div>
+
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="signupPassword" class="auth-input" placeholder="Create password" required />
+        </div>
+
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="signupConfirm" class="auth-input" placeholder="Confirm password" required />
+        </div>
+
+        <div id="signupError" class="auth-error"></div>
+
+        <button type="button" class="auth-btn" id="signupBtn">Sign Up</button>
+
+        <p class="auth-toggle">
+          Already have an account? 
+          <button type="button" class="auth-link" id="switchToLogin">Login</button>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header" id="mainHeader" style="display: none;">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">&gt;_</span>
+        <div>
+          <h1 class="brand-name">DSA Tracker</h1>
+          <p class="brand-sub">by Kalash Hayaran</p>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-chip">
+          <span class="stat-val" id="totalCount">0</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-chip easy">
+          <span class="stat-val" id="easyCount">0</span>
+          <span class="stat-label">Easy</span>
+        </div>
+        <div class="stat-chip medium">
+          <span class="stat-val" id="medCount">0</span>
+          <span class="stat-label">Medium</span>
+        </div>
+        <div class="stat-chip hard">
+          <span class="stat-val" id="hardCount">0</span>
+          <span class="stat-label">Hard</span>
+        </div>
+        <div id="userInfo" class="user-info">
+          <span class="username-display" id="usernameDisplay">User</span>
+          <button class="btn-logout" id="logoutBtn">Logout</button>
+        </div>
+        <button class="btn-add" id="openModalBtn">+ Log Problem</button>
+      </div>
+    </div>
+    <!-- Progress bar -->
+    <div class="progress-bar-wrap">
+      <div class="progress-segment easy-seg" id="easyBar"></div>
+      <div class="progress-segment med-seg" id="medBar"></div>
+      <div class="progress-segment hard-seg" id="hardBar"></div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <main class="main-layout" id="mainContent" style="display: none;">
+
+    <!-- SIDEBAR FILTERS -->
+    <aside class="sidebar">
+      <div class="filter-section">
+        <p class="filter-label">Search</p>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Problem name…" />
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <p class="filter-label">Topic</p>
+        <div class="chip-group" id="topicFilters">
+          <button class="chip active" data-topic="all">All</button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <p class="filter-label">Difficulty</p>
+        <div class="chip-group">
+          <button class="chip active diff-chip" data-diff="all">All</button>
+          <button class="chip diff-chip" data-diff="Easy">Easy</button>
+          <button class="chip diff-chip" data-diff="Medium">Medium</button>
+          <button class="chip diff-chip" data-diff="Hard">Hard</button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <p class="filter-label">Sort By</p>
+        <select class="sort-select" id="sortSelect">
+          <option value="date-desc">Date (Newest)</option>
+          <option value="date-asc">Date (Oldest)</option>
+          <option value="name-asc">Name A–Z</option>
+          <option value="difficulty">Difficulty</option>
+        </select>
+      </div>
+
+      <button class="btn-clear" id="clearFilters">↺ Reset Filters</button>
+
+      <!-- Heatmap mini-section -->
+      <div class="filter-section streak-box">
+        <p class="filter-label">Activity Streak</p>
+        <div id="streakDisplay" class="streak-num">0 days</div>
+        <div id="heatmapGrid" class="heatmap-grid"></div>
+      </div>
+    </aside>
+
+    <!-- PROBLEM TABLE -->
+    <section class="log-section">
+      <div class="log-toolbar">
+        <p class="log-count" id="logCount">Showing 0 problems</p>
+        <button class="btn-export" id="exportBtn">↓ Export CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="problem-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Problem</th>
+              <th>Topic</th>
+              <th>Difficulty</th>
+              <th>Date</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+        <div class="empty-state" id="emptyState">
+          <p class="empty-icon">&gt;_</p>
+          <p class="empty-title">No problems logged yet.</p>
+          <p class="empty-sub">Hit <strong>+ Log Problem</strong> to start tracking your grind.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL OVERLAY -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Log Problem</h2>
+        <button class="modal-close" id="closeModalBtn">✕</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field full">
+          <label>Problem Name *</label>
+          <input type="text" id="fName" class="f-input" placeholder="e.g. Two Sum" />
+        </div>
+
+        <div class="form-field">
+          <label>Topic *</label>
+          <select id="fTopic" class="f-input">
+            <option value="">Select topic…</option>
+            <option>Arrays</option>
+            <option>Strings</option>
+            <option>Linked List</option>
+            <option>Stack & Queue</option>
+            <option>Trees</option>
+            <option>Graphs</option>
+            <option>Dynamic Programming</option>
+            <option>Recursion & Backtracking</option>
+            <option>Sorting & Searching</option>
+            <option>Hashing</option>
+            <option>Math & Bit Manipulation</option>
+            <option>Greedy</option>
+            <option>Two Pointers</option>
+            <option>Sliding Window</option>
+            <option>Binary Search</option>
+            <option>Heaps & Priority Queue</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>Difficulty *</label>
+          <div class="diff-toggle">
+            <button type="button" class="diff-btn" data-val="Easy">Easy</button>
+            <button type="button" class="diff-btn" data-val="Medium">Medium</button>
+            <button type="button" class="diff-btn" data-val="Hard">Hard</button>
+          </div>
+          <input type="hidden" id="fDiff" />
+        </div>
+
+        <div class="form-field">
+          <label>Platform</label>
+          <select id="fPlatform" class="f-input">
+            <option value="">—</option>
+            <option>LeetCode</option>
+            <option>GeeksForGeeks</option>
+            <option>Codeforces</option>
+            <option>HackerRank</option>
+            <option>CodeChef</option>
+            <option>InterviewBit</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>Date Solved</label>
+          <input type="date" id="fDate" class="f-input" />
+        </div>
+
+        <div class="form-field">
+          <label>Problem Link</label>
+          <input type="url" id="fLink" class="f-input" placeholder="https://…" />
+        </div>
+
+        <div class="form-field full">
+          <label>Notes / Approach</label>
+          <textarea id="fNotes" class="f-input f-textarea" placeholder="Key idea, time complexity, what you learned…"></textarea>
+        </div>
+
+        <div class="form-field full">
+          <label>Tags (comma-separated)</label>
+          <input type="text" id="fTags" class="f-input" placeholder="e.g. hashmap, two-pass, O(n)" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <span class="form-error" id="formError"></span>
+        <button class="btn-cancel" id="cancelBtn">Cancel</button>
+        <button class="btn-save" id="saveBtn">Save Problem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal confirm-modal">
+      <p class="confirm-text">Delete this problem from your log?</p>
+      <div class="confirm-btns">
+        <button class="btn-cancel" id="confirmCancel">Cancel</button>
+        <button class="btn-delete" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
